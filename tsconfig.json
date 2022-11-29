@@ -1,6 +1,8 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
+    "jsx": "preserve", /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */
+    "module": "commonjs",
+    "esModuleInterop": true,
   }
 }
