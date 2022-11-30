@@ -8,8 +8,32 @@ import Loading from '../components/Loading';
 import { StatusBar } from 'expo-status-bar';
 import * as Location from "expo-location";
 import axios from "axios"
+import {firebase_db} from "../firebaseConfig"
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-export default function MainPage({navigation,route}) {
+type RootStackParamList = {
+    MainPage: undefined,
+    DetailPage: undefined;
+    AboutPage: undefined;
+    LikePage: undefined;
+  };
+
+type DetailPageNavigationProp = NativeStackNavigationProp<RootStackParamList, 'DetailPage'>;
+
+type Props = {
+    navigation: DetailPageNavigationProp
+}
+
+type cateState = {
+  idx: number,
+  category: string,
+  title: string,
+  image: string,
+  desc: string,
+  date: string
+}
+
+export default function MainPage({navigation}: Props) {
   //useState 사용법
 	//[state,setState] 에서 state는 이 컴포넌트에서 관리될 상태 데이터를 담고 있는 변수
   //setState는 state를 변경시킬때 사용해야하는 함수
@@ -17,7 +41,7 @@ export default function MainPage({navigation,route}) {
   //모두 다 useState가 선물해줌
   //useState()안에 전달되는 값은 state 초기값
   const [state,setState] = useState([])
-  const [cateState,setCateState] = useState([])
+  const [cateState,setCateState] = useState<cateState[]>([])
   //날씨 데이터 상태관리 상태 생성!
   const [weather, setWeather] = useState({
     temp : 0,
@@ -35,11 +59,15 @@ export default function MainPage({navigation,route}) {
 		//뒤의 1000 숫자는 1초를 뜻함
     //1초 뒤에 실행되는 코드들이 담겨 있는 함수
     setTimeout(()=>{
-        //헤더의 타이틀 변경
-        getLocation()
-        setState(data.tip)
-        setCateState(data.tip)
-        setReady(false)
+        firebase_db.ref('/tip').once('value').then((snapshot) => {
+          console.log("파이어베이스에서 데이터 가져왔습니다!!")
+          let tip = snapshot.val();
+          
+          setState(tip)
+          setCateState(tip)
+          getLocation()
+          setReady(false)
+        });
     },1000)
  
     
@@ -52,9 +80,6 @@ export default function MainPage({navigation,route}) {
       //자바스크립트 함수의 실행순서를 고정하기 위해 쓰는 async,await
       await Location.requestForegroundPermissionsAsync();
       const locationData= await Location.getCurrentPositionAsync();
-      console.log(locationData)
-      console.log(locationData['coords']['latitude'])
-      console.log(locationData['coords']['longitude'])
       const latitude = locationData['coords']['latitude']
       const longitude = locationData['coords']['longitude']
       const API_KEY = "cfc258c75e1da2149c33daffd07a911d";
@@ -94,8 +119,6 @@ export default function MainPage({navigation,route}) {
 
   //data.json 데이터는 state에 담기므로 상태에서 꺼내옴
   // let tip = state.tip;
-  let todayWeather = 10 + 17;
-  let todayCondition = "흐림"
   //return 구문 밖에서는 슬래시 두개 방식으로 주석
   return ready ? <Loading/> :  (
     /*

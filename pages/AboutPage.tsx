@@ -1,6 +1,6 @@
 import React,{ useEffect } from 'react';
 import { View, StyleSheet, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
-import { StackScreenProps } from '@react-navigation/stack';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as Linking from 'expo-linking';
 
 type RootStackParamList = {
@@ -9,9 +9,11 @@ type RootStackParamList = {
   AboutPage: undefined;
 };
 
-type Props = StackScreenProps<RootStackParamList, 'AboutPage'>;
+type Props = {
+    navigation: NativeStackNavigationProp<RootStackParamList, 'AboutPage'>;
+}
 
-const AboutPage = ({navigation,route}: Props) => {
+const AboutPage = ({navigation}: Props) => {
     useEffect(()=>{
         navigation.setOptions({
             title: '소개 페이지',

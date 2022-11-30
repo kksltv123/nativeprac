@@ -28,6 +28,25 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "246361db-8dae-451d-86c5-5c73f136f89a"
+      }
     }
-  }
+  },
+    "react-native-google-mobile-ads": {
+      "android_app_id": "ca-app-pub-xxxxxxxx~xxxxxxxx",
+      "ios_app_id": "ca-app-pub-xxxxxxxx~xxxxxxxx"
+    }
 }
